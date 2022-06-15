@@ -909,13 +909,17 @@ void AvtVimbaCamera::updateExposureConfig(Config& config)
     ROS_INFO("Updating Exposure config:");
   }
 
-  if (config.exposure != config_.exposure || on_init_)
-  {
-    configureFeature("ExposureTimeAbs", static_cast<float>(config.exposure), config.exposure);
-  }
+  // if (config.exposure != config_.exposure || on_init_)
+  // {
+  //   configureFeature("ExposureTimeAbs", static_cast<float>(config.exposure), config.exposure);
+  // }
   if (config.exposure_auto != config_.exposure_auto || on_init_)
   {
     configureFeature("ExposureAuto", config.exposure_auto, config.exposure_auto);
+  }
+  if (config.exposure != config_.exposure || on_init_)
+  {
+    configureFeature("ExposureTimeAbs", static_cast<float>(config.exposure), config.exposure);
   }
   if (config.exposure_auto_alg != config_.exposure_auto_alg || on_init_)
   {
@@ -923,8 +927,7 @@ void AvtVimbaCamera::updateExposureConfig(Config& config)
   }
   if (config.exposure_auto_tol != config_.exposure_auto_tol || on_init_)
   {
-    configureFeature("ExposureAutoAdjustTol", static_cast<VmbInt64_t>(config.exposure_auto_tol),
-                     config.exposure_auto_tol);
+    configureFeature("ExposureAutoAdjustTol", static_cast<VmbInt64_t>(config.exposure_auto_tol), config.exposure_auto_tol);
   }
   if (config.exposure_auto_max != config_.exposure_auto_max || on_init_)
   {
@@ -1037,6 +1040,102 @@ void AvtVimbaCamera::updatePtpModeConfig(Config& config)
   {
     // configureFeature("PtpMode", config.ptp_mode, config.ptp_mode);
     configureFeature("PtpMode", config.ptp_mode, config.ptp_mode);
+    
+    if(config.ptp_mode=="Slave")
+    {
+      if(config.trigger_source=="FixedRate")
+      {
+        if(config.trigger_selector=="FrameStart")
+        {
+          updatePtpAcquisitionGateTimeConfig(config);
+        }
+        else
+        {
+          ROS_INFO("PtpAcquisitionGateTime not being set. Trigger selector not set to FrameStart");  
+        }
+      }
+      else
+      {
+        ROS_INFO("PtpAcquisitionGateTime not being set. Trigger source not set to FixedRate");
+      }
+    }
+    else
+    {
+      ROS_INFO("PtpAcquisitionGateTime not being set. Camera ptp mode is not set to slave");
+    }
+  }
+}
+
+/** Change the Binning and Decimation configuration  CLEMSON*/
+void AvtVimbaCamera::updatePtpAcquisitionGateTimeConfig(Config& config)
+{
+  if (on_init_)
+  {
+    ROS_INFO("Updating PTP acquisition gate time config:");
+  }
+
+  if (config.ptp_acquisition_gate_time != config_.ptp_acquisition_gate_time  || on_init_)
+  {  
+    // // polling
+    // int syncTimeout = 10;
+    // std::string ptpStatus=0;
+
+    // for(auto i=0; i++; i<syncTimeout)
+    // {
+    //   getFeatureValue("PtpStatus", ptpStatus);
+    //   std::cout << "[ptpSyncTrigger] ptpStatus " << ptpStatus << " (attempt " << i+1 << " of " << syncTimeout <<") " << std::endl;
+    //   if(ptpStatus == "Disabled")
+    //   {
+    //     std::cout << "[ptpSyncTrigger] Cannot sync trigger when ptpMode is Off" << std::endl;
+    //     return;
+    //   }
+    //   else if(ptpStatus == "Listening" || ptpStatus == "Uncalibrated")
+    //   {
+    //     // std::cout << "[ptpSyncTrigger] Not in sync. Retrying." 
+    //     std::this_thread::sleep_for(std::chrono::seconds(1));
+    //   }
+    //   else if(ptpStatus == "Slave" || ptpStatus == "Master" || ptpStatus == "Passive")
+    //     break;
+    //   else
+    //   {
+    //     std::cout << "[ptpSyncTrigger] Unknown ptpStatus -- not PTP synchronized" << std::endl;
+    //     return;
+    //   }
+    // }  
+
+    // working code dont edit
+    VmbInt64_t scamTime = 0;
+    VmbInt64_t setTime = ros::Time::now().toSec();
+    runCommand("GevTimestampControlLatch");
+    getFeatureValue("GevTimestampValue", scamTime);
+    std::cout << "Set cam time is - " << scamTime << std::endl;
+    VmbInt64_t testTime = setTime+12+37;
+    testTime = testTime * 1000000000;
+    configureFeature("PtpAcquisitionGateTime", testTime, config.ptp_acquisition_gate_time );
+    getFeatureValue("PtpAcquisitionGateTime", setTime);
+    std::cout << "Set ptp time is - " << setTime << std::endl;
+
+    // Config configuration = Config();
+    //FeaturePtr ftrptr;
+    
+    // // working access mode code
+    // VimbaSystem &sys = VimbaSystem::GetInstance(); // Create and get Vimba singleton
+    // sys.Startup();
+    // CameraPtrVector cameras; // Holds camera handles
+    // sys.GetCameras(cameras);
+    // CameraPtr camera = cameras[0];
+    // VmbAccessModeType zilch;
+    // // camera->GetFeatureByName("BalanceWhiteAuto", ftrptr);
+    // VmbErrorType err = camera->GetPermittedAccess(zilch);
+    // std::cout << "Access mode is - " << zilch << std::endl;
+
+    // // new code
+    // VmbInt64_t ptpAcquisitionTime;
+    // VmbInt64_t gevTime;
+    // runCommand("GevTimestampControlLatch");
+    // getFeatureValue("GevTimestampValue", gevTime);
+    
+
   }
 }
 

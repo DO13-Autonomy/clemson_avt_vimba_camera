@@ -150,6 +150,7 @@ private:
   void updateBandwidthConfig(Config& config);
   void updatePixelFormatConfig(Config& config);
   void updatePtpModeConfig(Config& config);
+  void updatePtpAcquisitionGateTimeConfig(Config& config);
   void updateGPIOConfig(Config& config);
   void updateUSBGPIOConfig(Config& config);
   void updateIrisConfig(Config& config);

@@ -56,6 +56,8 @@ MonoCamera::MonoCamera(ros::NodeHandle& nh, ros::NodeHandle& nhp)
   nhp_.param("print_all_features", print_all_features_, false);
   nhp_.param("use_measurement_time", use_measurement_time_, false);
   nhp_.param("ptp_offset", ptp_offset_, 0);
+  nhp_.param("stereo", stereo_, false); //clemson
+  nhp_.param("ptp_mode", ptp_mode_, std::string("")); //clemson
 
   // Set camera info manager
   info_man_ = std::shared_ptr<camera_info_manager::CameraInfoManager>(
@@ -124,9 +126,62 @@ void MonoCamera::configure(Config& newconfig, uint32_t level)
       cam_.start(ip_, guid_, frame_id_, print_all_features_);
     }
 
+    // // working access mode code
+    // VimbaSystem &sys = VimbaSystem::GetInstance(); // Create and get Vimba singleton
+    // sys.Startup();
+    // CameraPtrVector cameras; // Holds camera handles
+    // sys.GetCameras(cameras);
+    // CameraPtr camera = cameras[0];
+    // VmbAccessModeType zilch;
+    // // camera->GetFeatureByName("BalanceWhiteAuto", ftrptr);
+    // VmbErrorType err = camera->GetPermittedAccess(zilch);
+    // std::cout << "Access mode is - " << zilch << std::endl;
+    
     Config config = newconfig;
     cam_.updateConfig(config);
     updateCameraInfo(config);
+
+
+    // // Start the API , get and open cameras
+    // sys.Startup();
+    // sys.GetCameras(cameras);
+    // camera=cameras[0];
+    // camera ->Open( VmbAccessModeFull );
+    // Get the image size for the required buffer
+    // Allocate memory for frame buffer
+    // Register frame observer / callback for each frame
+    // Announce frame to the API
+    // camera -> GetFeatureByName ("PtpAcquisitionGateTime",ftrptr);
+    // ftrptr -> SetValue(1314);
+    // ftrptr -> GetValue(iAcqGateTime2);
+
+  //   if (this->stereo_)
+  //   {
+  //     //cam_.stopImaging();
+  //     ROS_INFO("Stereo working");
+  //     // cam_.stop();
+  //     // cam_.start(ip_, guid_, frame_id_, print_all_features_);
+  //     if(config.trigger_source != "FixedRate")
+  //     {
+  //       ROS_WARN("Mako stereo mode only supported in fixed rate trigger mode. Currently running in mode: %s", config.trigger_source.c_str() );
+  //     } 
+  //     else if (this->ptp_mode_ == "Off")
+  //     {
+  //       ROS_WARN("Mako stereo mode requires PTP time synchronization to be active. Currently running in mode: %s", config.ptp_mode.c_str() );
+  //     }
+  //     else
+  //     {
+  //       ROS_INFO("Outside Stereo %s", config.trigger_source.c_str() );
+
+  //       auto offset = (VmbInt64_t)(-ptp_offset_);
+  //       cam_.ptpSyncTrigger(offset, config); 
+
+  //     }
+  //     //cam_.startImaging();
+  //   }
+  //   else{
+  //     ROS_WARN("Stereo not working");
+  //   }
   }
   catch (const std::exception& e)
   {
