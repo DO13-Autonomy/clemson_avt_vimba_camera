@@ -156,6 +156,7 @@ private:
   void updateIrisConfig(Config& config);
 
   void getCurrentState(diagnostic_updater::DiagnosticStatusWrapper& stat);
+  bool performPolling();
 };
 }  // namespace avt_vimba_camera
 #endif

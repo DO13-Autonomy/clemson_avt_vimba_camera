@@ -1076,44 +1076,25 @@ void AvtVimbaCamera::updatePtpAcquisitionGateTimeConfig(Config& config)
 
   if (config.ptp_acquisition_gate_time != config_.ptp_acquisition_gate_time  || on_init_)
   {  
-    // // polling
-    // int syncTimeout = 10;
-    // std::string ptpStatus=0;
+    // polling
+    bool bPollOutput = performPolling();
+    std::cout << "The polling output is :"<< bPollOutput <<std::endl;
 
-    // for(auto i=0; i++; i<syncTimeout)
-    // {
-    //   getFeatureValue("PtpStatus", ptpStatus);
-    //   std::cout << "[ptpSyncTrigger] ptpStatus " << ptpStatus << " (attempt " << i+1 << " of " << syncTimeout <<") " << std::endl;
-    //   if(ptpStatus == "Disabled")
-    //   {
-    //     std::cout << "[ptpSyncTrigger] Cannot sync trigger when ptpMode is Off" << std::endl;
-    //     return;
-    //   }
-    //   else if(ptpStatus == "Listening" || ptpStatus == "Uncalibrated")
-    //   {
-    //     // std::cout << "[ptpSyncTrigger] Not in sync. Retrying." 
-    //     std::this_thread::sleep_for(std::chrono::seconds(1));
-    //   }
-    //   else if(ptpStatus == "Slave" || ptpStatus == "Master" || ptpStatus == "Passive")
-    //     break;
-    //   else
-    //   {
-    //     std::cout << "[ptpSyncTrigger] Unknown ptpStatus -- not PTP synchronized" << std::endl;
-    //     return;
-    //   }
-    // }  
-
-    // working code dont edit
-    VmbInt64_t scamTime = 0;
-    VmbInt64_t setTime = ros::Time::now().toSec();
-    runCommand("GevTimestampControlLatch");
-    getFeatureValue("GevTimestampValue", scamTime);
-    std::cout << "Set cam time is - " << scamTime << std::endl;
-    VmbInt64_t testTime = setTime+12+37;
-    testTime = testTime * 1000000000;
-    configureFeature("PtpAcquisitionGateTime", testTime, config.ptp_acquisition_gate_time );
-    getFeatureValue("PtpAcquisitionGateTime", setTime);
-    std::cout << "Set ptp time is - " << setTime << std::endl;
+    if(bPollOutput){
+      int offset;
+      ros::param::get("~ptp_offset",offset);
+      // working code dont edit
+      VmbInt64_t scamTime = 0;
+      VmbInt64_t setTime = ros::Time::now().toSec();
+      runCommand("GevTimestampControlLatch");
+      getFeatureValue("GevTimestampValue", scamTime);
+      std::cout << "Set cam time is - " << scamTime << std::endl;
+      VmbInt64_t testTime = setTime+10-static_cast<VmbInt64_t>(offset);
+      testTime = testTime * 1000000000;
+      configureFeature("PtpAcquisitionGateTime", testTime, config.ptp_acquisition_gate_time );
+      getFeatureValue("PtpAcquisitionGateTime", setTime);
+      std::cout << "Set ptp time is - " << setTime << std::endl;
+    }
 
     // Config configuration = Config();
     //FeaturePtr ftrptr;
@@ -1128,13 +1109,6 @@ void AvtVimbaCamera::updatePtpAcquisitionGateTimeConfig(Config& config)
     // // camera->GetFeatureByName("BalanceWhiteAuto", ftrptr);
     // VmbErrorType err = camera->GetPermittedAccess(zilch);
     // std::cout << "Access mode is - " << zilch << std::endl;
-
-    // // new code
-    // VmbInt64_t ptpAcquisitionTime;
-    // VmbInt64_t gevTime;
-    // runCommand("GevTimestampControlLatch");
-    // getFeatureValue("GevTimestampValue", gevTime);
-    
 
   }
 }
@@ -1292,5 +1266,34 @@ void AvtVimbaCamera::getCurrentState(diagnostic_updater::DiagnosticStatusWrapper
       stat.summary(diagnostic_msgs::DiagnosticStatus::ERROR, "Camera is in unknown state");
       break;
   }
+}
+
+bool AvtVimbaCamera::performPolling(){
+  int syncTimeout = 12;
+  std::string ptpStatus;
+
+  for(auto i=0; i<syncTimeout; i++)
+  {
+    getFeatureValue("PtpStatus", ptpStatus);
+    std::cout << "[ptpSyncTrigger] ptpStatus " << ptpStatus << " (attempt " << i+1 << " of " << syncTimeout <<") " << std::endl;
+    if(ptpStatus == "Disabled")
+    {
+      std::cout << "[ptpSyncTrigger] Cannot sync trigger when ptpMode is Off" << std::endl;
+      return false;
+    }
+    else if(ptpStatus == "Listening" || ptpStatus == "Uncalibrated")
+    {
+      // std::cout << "[ptpSyncTrigger] Not in sync. Retrying." 
+      std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+    else if(ptpStatus == "Slave" || ptpStatus == "Master" || ptpStatus == "Passive")
+      return true;
+    else
+    {
+      std::cout << "[ptpSyncTrigger] Unknown ptpStatus -- not PTP synchronized" << std::endl;
+      continue;
+    }
+  }  
+  return false;
 }
 }  // namespace avt_vimba_camera

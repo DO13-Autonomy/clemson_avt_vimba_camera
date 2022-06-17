@@ -69,7 +69,7 @@ private:
   bool use_measurement_time_;
   int32_t ptp_offset_;
   bool stereo_;                 //clemson
-  // std::string ptp_mode_;        //clemson 
+  std::string ptp_mode_;        //clemson 
 
   image_transport::ImageTransport it_;
   image_transport::CameraPublisher pub_;

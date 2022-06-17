@@ -17,7 +17,7 @@
 
   <!-- Acquisition -->
   <arg name="acquisition_mode" default="Continuous"/>
-  <arg name="acquisition_rate" default="35"/>
+  <arg name="acquisition_rate" default="1"/>
 
   <!-- Exposure -->
   <arg name="exposure" default="10000"/>
@@ -72,7 +72,7 @@
   <arg name="pixel_format" default="RGB8Packed"/>
 
   <!-- Bandwidth -->
-  <arg name="stream_bytes_per_second" default="115000000"/>
+  <arg name="stream_bytes_per_second" default="45000000"/>
 
   <!-- PTP Synchronization -->
   <arg name="ptp_mode" default="Slave"/>
