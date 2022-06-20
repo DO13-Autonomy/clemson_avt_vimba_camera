@@ -14,17 +14,26 @@
   <arg name="frame_id_2" default="$(arg name_2)" doc="The frame id of the camera"/>
   <arg name="camera_info_url_2" default="file://$(find avt_vimba_camera)/calibrations/calibration_example_stereo_2.yaml"/>
 
+  <arg name="name_3" default="camera_3" doc="The name of the camera"/>
+  <arg name="ip_3" default="192.168.74.20" doc="The IP for the camera to connect to"/>
+  <arg name="frame_id_3" default="$(arg name_3)" doc="The frame id of the camera"/>
+  <arg name="camera_info_url_3" default="file://$(find avt_vimba_camera)/calibrations/calibration_example_stereo_3.yaml"/>
+
+  <arg name="name_4" default="camera_4" doc="The name of the camera"/>
+  <arg name="ip_4" default="192.168.74.22" doc="The IP for the camera to connect to"/>
+  <arg name="frame_id_4" default="$(arg name_4)" doc="The frame id of the camera"/>
+  <arg name="camera_info_url_4" default="file://$(find avt_vimba_camera)/calibrations/calibration_example_stereo_4.yaml"/>
 
   <!-- Acquisition -->
   <arg name="acquisition_mode" default="Continuous"/>
-  <arg name="acquisition_rate" default="1"/>
+  <arg name="acquisition_rate" default="35"/>
 
   <!-- Exposure -->
   <arg name="exposure" default="10000"/>
   <arg name="exposure_auto" default="Continuous"/>
   <arg name="exposure_auto_alg" default="FitRange"/>
   <arg name="exposure_auto_tol" default="5"/>
-  <arg name="exposure_auto_max" default="28000"/>
+  <arg name="exposure_auto_max" default="25000"/>
   <arg name="exposure_auto_min" default="1000"/>
   <arg name="exposure_auto_outliers" default="0"/>
   <arg name="exposure_auto_rate" default="25"/>
@@ -48,9 +57,9 @@
   <arg name="gain_auto_target" default="50"/>
 
   <!-- White Balance -->  
-  <arg name="balance_ratio_abs" default="1.0"/>
+  <arg name="balance_ratio_abs" default="1.75"/>
   <arg name="balance_ratio_selector" default="Red"/>
-  <arg name="whitebalance_auto" default="Off"/>
+  <arg name="whitebalance_auto" default="Continuous"/>
   <arg name="whitebalance_auto_tol" default="5"/>
   <arg name="whitebalance_auto_rate" default="100"/>
 
@@ -69,10 +78,10 @@
   <arg name="offset_y" default="0"/>
 
   <!-- Pixel Format -->
-  <arg name="pixel_format" default="Mono8"/>
+  <arg name="pixel_format" default="BayerRG8"/>
 
   <!-- Bandwidth -->
-  <arg name="stream_bytes_per_second" default="115000000"/>
+  <arg name="stream_bytes_per_second" default="124000000"/>
 
   <!-- PTP Synchronization -->
   <arg name="ptp_mode" default="Off"/>
@@ -84,15 +93,6 @@
   <arg name="sync_out_selector" default="SyncOut1"/>
   <arg name="sync_out_source" default="GPO"/>
 
-  <!-- USB GPIO -->
-  <!-- <arg name="line_selector" default="Line0"/>
-  <arg name="line_mode" default="Input"/> -->
-
-  <!-- Iris -->
-  <!-- <arg name="iris_auto_target" default="50"/>
-  <arg name="iris_mode" default="Continuous"/>
-  <arg name="iris_video_level_min" default="110"/>
-  <arg name="iris_video_level_max" default="110"/> -->
 
   <include file="$(find avt_vimba_camera)/launch/mono_camera.launch">
     <arg name="name" value="$(arg name_1)"/>
@@ -160,14 +160,6 @@
     <arg name="sync_out_selector" value="$(arg sync_out_selector)"/>
     <arg name="sync_out_source" value="$(arg sync_out_source)"/>
 
-    <!-- <arg name="line_selector" value="$(arg line_selector)"/>
-    <arg name="line_mode" value="$(arg line_mode)"/> -->
-
-    <!-- <arg name="iris_auto_target" value="$(arg iris_auto_target)"/>
-    <arg name="iris_mode" value="$(arg iris_mode)"/>
-    <arg name="iris_video_level_min" value="$(arg iris_video_level_min)"/>
-    <arg name="iris_video_level_max" value="$(arg iris_video_level_max)"/>
-   -->
   </include>
 
   <include file="$(find avt_vimba_camera)/launch/mono_camera.launch">
@@ -235,14 +227,142 @@
     <arg name="sync_out_polarity" value="$(arg sync_out_polarity)"/>
     <arg name="sync_out_selector" value="$(arg sync_out_selector)"/>
     <arg name="sync_out_source" value="$(arg sync_out_source)"/>
-
-    <!-- <arg name="line_selector" value="$(arg line_selector)"/>
-    <arg name="line_mode" value="$(arg line_mode)"/> -->
-
-    <!-- <arg name="iris_auto_target" value="$(arg iris_auto_target)"/>
-    <arg name="iris_mode" value="$(arg iris_mode)"/>
-    <arg name="iris_video_level_min" value="$(arg iris_video_level_min)"/>
-    <arg name="iris_video_level_max" value="$(arg iris_video_level_max)"/> -->
   
+  </include>
+
+  <include file="$(find avt_vimba_camera)/launch/mono_camera.launch">
+    <arg name="name" value="$(arg name_3)"/>
+    <arg name="frame_id" value="$(arg frame_id_3)"/>
+    <arg name="ip" value="$(arg ip_3)"/>
+
+    <arg name="guid" value="$(arg guid)"/>
+    <arg name="camera_info_url" value="$(arg camera_info_url_3)"/>
+    <arg name="use_measurement_time" value="$(arg use_measurement_time)"/>
+    <arg name="stereo" value="$(arg stereo)"/>
+
+    <arg name="acquisition_mode" value="$(arg acquisition_mode)"/>
+    <arg name="acquisition_rate" value="$(arg acquisition_rate)"/>
+
+    <arg name="trigger_source" value="$(arg trigger_source)"/>
+    <arg name="trigger_mode" value="$(arg trigger_mode)"/>
+    <arg name="trigger_selector" value="$(arg trigger_selector)"/>
+    <arg name="trigger_activation" value="$(arg trigger_activation)"/>
+    <arg name="trigger_delay" value="$(arg trigger_delay)"/>
+
+    <arg name="exposure" value="$(arg exposure)"/>
+    <arg name="exposure_auto" value="$(arg exposure_auto)"/>
+    <arg name="exposure_auto_alg" value="$(arg exposure_auto_alg)"/>
+    <arg name="exposure_auto_tol" value="$(arg exposure_auto_tol)"/>
+    <arg name="exposure_auto_max" value="$(arg exposure_auto_max)"/>
+    <arg name="exposure_auto_min" value="$(arg exposure_auto_min)"/>
+    <arg name="exposure_auto_outliers" value="$(arg exposure_auto_outliers)"/>
+    <arg name="exposure_auto_rate" value="$(arg exposure_auto_rate)"/>
+    <arg name="exposure_auto_target" value="$(arg exposure_auto_target)"/>
+
+    <arg name="gain" value="$(arg gain)"/>
+    <arg name="gain_auto" value="$(arg gain_auto)"/>
+    <arg name="gain_auto_adjust_tol" value="$(arg gain_auto_adjust_tol)"/>
+    <arg name="gain_auto_max" value="$(arg gain_auto_max)"/>
+    <arg name="gain_auto_min" value="$(arg gain_auto_min)"/>
+    <arg name="gain_auto_outliers" value="$(arg gain_auto_outliers)"/>
+    <arg name="gain_auto_rate" value="$(arg gain_auto_rate)"/>
+    <arg name="gain_auto_target" value="$(arg gain_auto_target)"/>
+
+    <arg name="balance_ratio_abs" value="$(arg balance_ratio_abs)"/>
+    <arg name="balance_ratio_selector" value="$(arg balance_ratio_selector)"/>
+    <arg name="whitebalance_auto" value="$(arg whitebalance_auto)"/>
+    <arg name="whitebalance_auto_tol" value="$(arg whitebalance_auto_tol)"/>
+    <arg name="whitebalance_auto_rate" value="$(arg whitebalance_auto_rate)"/>
+
+    <arg name="binning_x" value="$(arg binning_x)"/>
+    <arg name="binning_y" value="$(arg binning_y)"/>
+    <arg name="decimation_x" value="$(arg decimation_x)"/>
+    <arg name="decimation_y" value="$(arg decimation_y)"/>
+
+    <arg name="width" value="$(arg width)"/>
+    <arg name="height" value="$(arg height)"/>
+    <arg name="offset_x" value="$(arg offset_x)"/>
+    <arg name="offset_y" value="$(arg offset_y)"/>
+
+    <arg name="pixel_format" value="$(arg pixel_format)"/>
+
+    <arg name="stream_bytes_per_second" value="$(arg stream_bytes_per_second)"/>
+
+    <!--< arg name="stereo" value="true"/> -->
+    <arg name="ptp_mode" value="$(arg ptp_mode)"/>
+
+    <arg name="sync_in_selector" value="$(arg sync_in_selector)"/>
+    <arg name="sync_out_polarity" value="$(arg sync_out_polarity)"/>
+    <arg name="sync_out_selector" value="$(arg sync_out_selector)"/>
+    <arg name="sync_out_source" value="$(arg sync_out_source)"/>
+
+  </include>
+
+  <include file="$(find avt_vimba_camera)/launch/mono_camera.launch">
+    <arg name="name" value="$(arg name_4)"/>
+    <arg name="frame_id" value="$(arg frame_id_4)"/>
+    <arg name="ip" value="$(arg ip_4)"/>
+
+    <arg name="guid" value="$(arg guid)"/>
+    <arg name="camera_info_url" value="$(arg camera_info_url_4)"/>
+    <arg name="use_measurement_time" value="$(arg use_measurement_time)"/>
+    <arg name="stereo" value="$(arg stereo)"/>
+
+    <arg name="acquisition_mode" value="$(arg acquisition_mode)"/>
+    <arg name="acquisition_rate" value="$(arg acquisition_rate)"/>
+
+    <arg name="trigger_source" value="$(arg trigger_source)"/>
+    <arg name="trigger_mode" value="$(arg trigger_mode)"/>
+    <arg name="trigger_selector" value="$(arg trigger_selector)"/>
+    <arg name="trigger_activation" value="$(arg trigger_activation)"/>
+    <arg name="trigger_delay" value="$(arg trigger_delay)"/>
+
+    <arg name="exposure" value="$(arg exposure)"/>
+    <arg name="exposure_auto" value="$(arg exposure_auto)"/>
+    <arg name="exposure_auto_alg" value="$(arg exposure_auto_alg)"/>
+    <arg name="exposure_auto_tol" value="$(arg exposure_auto_tol)"/>
+    <arg name="exposure_auto_max" value="$(arg exposure_auto_max)"/>
+    <arg name="exposure_auto_min" value="$(arg exposure_auto_min)"/>
+    <arg name="exposure_auto_outliers" value="$(arg exposure_auto_outliers)"/>
+    <arg name="exposure_auto_rate" value="$(arg exposure_auto_rate)"/>
+    <arg name="exposure_auto_target" value="$(arg exposure_auto_target)"/>
+
+    <arg name="gain" value="$(arg gain)"/>
+    <arg name="gain_auto" value="$(arg gain_auto)"/>
+    <arg name="gain_auto_adjust_tol" value="$(arg gain_auto_adjust_tol)"/>
+    <arg name="gain_auto_max" value="$(arg gain_auto_max)"/>
+    <arg name="gain_auto_min" value="$(arg gain_auto_min)"/>
+    <arg name="gain_auto_outliers" value="$(arg gain_auto_outliers)"/>
+    <arg name="gain_auto_rate" value="$(arg gain_auto_rate)"/>
+    <arg name="gain_auto_target" value="$(arg gain_auto_target)"/>
+
+    <arg name="balance_ratio_abs" value="$(arg balance_ratio_abs)"/>
+    <arg name="balance_ratio_selector" value="$(arg balance_ratio_selector)"/>
+    <arg name="whitebalance_auto" value="$(arg whitebalance_auto)"/>
+    <arg name="whitebalance_auto_tol" value="$(arg whitebalance_auto_tol)"/>
+    <arg name="whitebalance_auto_rate" value="$(arg whitebalance_auto_rate)"/>
+
+    <arg name="binning_x" value="$(arg binning_x)"/>
+    <arg name="binning_y" value="$(arg binning_y)"/>
+    <arg name="decimation_x" value="$(arg decimation_x)"/>
+    <arg name="decimation_y" value="$(arg decimation_y)"/>
+
+    <arg name="width" value="$(arg width)"/>
+    <arg name="height" value="$(arg height)"/>
+    <arg name="offset_x" value="$(arg offset_x)"/>
+    <arg name="offset_y" value="$(arg offset_y)"/>
+
+    <arg name="pixel_format" value="$(arg pixel_format)"/>
+
+    <arg name="stream_bytes_per_second" value="$(arg stream_bytes_per_second)"/>
+
+    <!--< arg name="stereo" value="true"/> -->
+    <arg name="ptp_mode" value="$(arg ptp_mode)"/>
+
+    <arg name="sync_in_selector" value="$(arg sync_in_selector)"/>
+    <arg name="sync_out_polarity" value="$(arg sync_out_polarity)"/>
+    <arg name="sync_out_selector" value="$(arg sync_out_selector)"/>
+    <arg name="sync_out_source" value="$(arg sync_out_source)"/>
+
   </include>
 </launch>
