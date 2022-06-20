@@ -1041,27 +1041,36 @@ void AvtVimbaCamera::updatePtpModeConfig(Config& config)
     // configureFeature("PtpMode", config.ptp_mode, config.ptp_mode);
     configureFeature("PtpMode", config.ptp_mode, config.ptp_mode);
     
-    if(config.ptp_mode=="Slave")
+    bool stereo;
+    ros::param::get("~stereo",stereo);
+    if(stereo == true)
     {
-      if(config.trigger_source=="FixedRate")
+      if(config.ptp_mode=="Slave")
       {
-        if(config.trigger_selector=="FrameStart")
+        if(config.trigger_source=="FixedRate")
         {
-          updatePtpAcquisitionGateTimeConfig(config);
+          if(config.trigger_selector=="FrameStart")
+          {
+            updatePtpAcquisitionGateTimeConfig(config);
+          }
+          else
+          {
+            ROS_INFO("PtpAcquisitionGateTime not being set. Trigger selector not set to FrameStart");  
+          }
         }
         else
         {
-          ROS_INFO("PtpAcquisitionGateTime not being set. Trigger selector not set to FrameStart");  
+          ROS_INFO("PtpAcquisitionGateTime not being set. Trigger source not set to FixedRate");
         }
       }
       else
       {
-        ROS_INFO("PtpAcquisitionGateTime not being set. Trigger source not set to FixedRate");
+        ROS_INFO("PtpAcquisitionGateTime not being set. Camera ptp mode is not set to slave");
       }
     }
     else
     {
-      ROS_INFO("PtpAcquisitionGateTime not being set. Camera ptp mode is not set to slave");
+      ROS_INFO("PtpAcquisitionGateTime not being set. Not running in stereo mode");
     }
   }
 }
@@ -1085,6 +1094,15 @@ void AvtVimbaCamera::updatePtpAcquisitionGateTimeConfig(Config& config)
       ros::param::get("~ptp_offset",offset);
       // working code dont edit
       VmbInt64_t scamTime = 0;
+      VmbInt64_t setTime = ros::Time::now().toSec();  // polling
+    bool bPollOutput = performPolling();
+    std::cout << "The polling output is :"<< bPollOutput <<std::endl;
+
+    if(bPollOutput){
+      int offset;
+      ros::param::get("~ptp_offset",offset);
+      // working code dont edit
+      VmbInt64_t scamTime = 0;
       VmbInt64_t setTime = ros::Time::now().toSec();
       runCommand("GevTimestampControlLatch");
       getFeatureValue("GevTimestampValue", scamTime);
@@ -1095,7 +1113,15 @@ void AvtVimbaCamera::updatePtpAcquisitionGateTimeConfig(Config& config)
       getFeatureValue("PtpAcquisitionGateTime", setTime);
       std::cout << "Set ptp time is - " << setTime << std::endl;
     }
-
+      runCommand("GevTimestampControlLatch");
+      getFeatureValue("GevTimestampValue", scamTime);
+      std::cout << "Set cam time is - " << scamTime << std::endl;
+      VmbInt64_t testTime = setTime+10-static_cast<VmbInt64_t>(offset);
+      testTime = testTime * 1000000000;
+      configureFeature("PtpAcquisitionGateTime", testTime, config.ptp_acquisition_gate_time );
+      getFeatureValue("PtpAcquisitionGateTime", setTime);
+      std::cout << "Set ptp time is - " << setTime << std::endl;
+    }
     // Config configuration = Config();
     //FeaturePtr ftrptr;
     
