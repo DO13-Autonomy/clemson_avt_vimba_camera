@@ -1094,15 +1094,6 @@ void AvtVimbaCamera::updatePtpAcquisitionGateTimeConfig(Config& config)
       ros::param::get("~ptp_offset",offset);
       // working code dont edit
       VmbInt64_t scamTime = 0;
-      VmbInt64_t setTime = ros::Time::now().toSec();  // polling
-    bool bPollOutput = performPolling();
-    std::cout << "The polling output is :"<< bPollOutput <<std::endl;
-
-    if(bPollOutput){
-      int offset;
-      ros::param::get("~ptp_offset",offset);
-      // working code dont edit
-      VmbInt64_t scamTime = 0;
       VmbInt64_t setTime = ros::Time::now().toSec();
       runCommand("GevTimestampControlLatch");
       getFeatureValue("GevTimestampValue", scamTime);
@@ -1113,29 +1104,6 @@ void AvtVimbaCamera::updatePtpAcquisitionGateTimeConfig(Config& config)
       getFeatureValue("PtpAcquisitionGateTime", setTime);
       std::cout << "Set ptp time is - " << setTime << std::endl;
     }
-      runCommand("GevTimestampControlLatch");
-      getFeatureValue("GevTimestampValue", scamTime);
-      std::cout << "Set cam time is - " << scamTime << std::endl;
-      VmbInt64_t testTime = setTime+10-static_cast<VmbInt64_t>(offset);
-      testTime = testTime * 1000000000;
-      configureFeature("PtpAcquisitionGateTime", testTime, config.ptp_acquisition_gate_time );
-      getFeatureValue("PtpAcquisitionGateTime", setTime);
-      std::cout << "Set ptp time is - " << setTime << std::endl;
-    }
-    // Config configuration = Config();
-    //FeaturePtr ftrptr;
-    
-    // // working access mode code
-    // VimbaSystem &sys = VimbaSystem::GetInstance(); // Create and get Vimba singleton
-    // sys.Startup();
-    // CameraPtrVector cameras; // Holds camera handles
-    // sys.GetCameras(cameras);
-    // CameraPtr camera = cameras[0];
-    // VmbAccessModeType zilch;
-    // // camera->GetFeatureByName("BalanceWhiteAuto", ftrptr);
-    // VmbErrorType err = camera->GetPermittedAccess(zilch);
-    // std::cout << "Access mode is - " << zilch << std::endl;
-
   }
 }
 
