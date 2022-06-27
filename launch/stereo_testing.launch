@@ -1,26 +1,27 @@
 <launch>
   <arg name="name_1" default="camera_1" doc="The name of the camera"/>
   <arg name="frame_id_1" default="$(arg name_1)" doc="The frame id of the camera"/>
-  <arg name="ip_1" default="192.168.74.23" doc="The IP for the camera to connect to"/>
+  <arg name="ip_1" default="192.168.75.23" doc="The IP for the camera to connect to"/>
   <arg name="camera_info_url_1" default="file://$(find avt_vimba_camera)/calibrations/calibration_example_stereo_1.yaml"/>
 
   <arg name="guid" default="" doc="The GUID for the camera to connect to"/>
   <arg name="camera_info_url" default="file://$(find avt_vimba_camera)/calibrations/calibration_example.yaml"/>
-  <arg name="stereo" default="false"/>
+  <!-- Use both stereo and measurement time if using ptp -->
+  <arg name="stereo" default="true"/>
   <arg name="use_measurement_time" default="true"/>
 
   <arg name="name_2" default="camera_2" doc="The name of the camera"/>
-  <arg name="ip_2" default="192.168.74.24" doc="The IP for the camera to connect to"/>
+  <arg name="ip_2" default="192.168.75.24" doc="The IP for the camera to connect to"/>
   <arg name="frame_id_2" default="$(arg name_2)" doc="The frame id of the camera"/>
   <arg name="camera_info_url_2" default="file://$(find avt_vimba_camera)/calibrations/calibration_example_stereo_2.yaml"/>
 
   <arg name="name_3" default="camera_3" doc="The name of the camera"/>
-  <arg name="ip_3" default="192.168.74.20" doc="The IP for the camera to connect to"/>
+  <arg name="ip_3" default="192.168.75.20" doc="The IP for the camera to connect to"/>
   <arg name="frame_id_3" default="$(arg name_3)" doc="The frame id of the camera"/>
   <arg name="camera_info_url_3" default="file://$(find avt_vimba_camera)/calibrations/calibration_example_stereo_3.yaml"/>
 
   <arg name="name_4" default="camera_4" doc="The name of the camera"/>
-  <arg name="ip_4" default="192.168.74.22" doc="The IP for the camera to connect to"/>
+  <arg name="ip_4" default="192.168.75.22" doc="The IP for the camera to connect to"/>
   <arg name="frame_id_4" default="$(arg name_4)" doc="The frame id of the camera"/>
   <arg name="camera_info_url_4" default="file://$(find avt_vimba_camera)/calibrations/calibration_example_stereo_4.yaml"/>
 
